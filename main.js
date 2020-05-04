@@ -8,10 +8,19 @@ const fieldCharacter = '░';
 const pathCharacter = '*';
 
 class Field {
-    constructor(field) {
+    constructor(field, randomStart) {
         this._field = field;
-        this.x = Math.floor(Math.random() * field[0].length);
-        this.y = Math.floor(Math.random() * field.length);
+        this._randomStart = randomStart;
+        if(this._randomStart){
+            do{
+                this.x = Math.floor(Math.random() * field[0].length);
+                this.y = Math.floor(Math.random() * field.length);
+            } while(this._field[this.y][this.x] === hat)
+        }
+        else{
+            this.x = 0;
+            this.y = 0;
+        }
         this._field[this.y][this.x] = pathCharacter;
     }
     print() {
@@ -41,6 +50,9 @@ class Field {
                 break;
         }
     }
+    isValidField() {
+        return true;
+    }
     static generateField(y, x, holes = 0.1) {
         if (y < 5 || x < 5) {
             console.log('Error: Field parameters too small')
@@ -55,10 +67,12 @@ class Field {
             }
             newField.push([...newLine]);
         }
-
-
-        let hatY = Math.floor(Math.random() * y);
-        let hatX = Math.floor(Math.random() * x);
+        let hatY;
+        let hatX;
+        do{
+            hatY = Math.floor(Math.random() * y);
+            hatX = Math.floor(Math.random() * x);
+        } while(!this._randomStart && (hatY + hatX) === 0)
 
         newField[hatY][hatX] = hat;
 
@@ -68,6 +82,9 @@ class Field {
         let play = true;
         while (play) {
             console.clear();
+            while(!this.isValidField){
+                this._field 
+            }
             this.print();
             this.askQuestion();
 
@@ -94,8 +111,16 @@ class Field {
 };
 
 
-
-const myField = new Field(Field.generateField(10, 25, .25));
+const userRandom = prompt('Do you want to start at a random position? [Y] or [N]: ').toUpperCase() === 'Y' ? true : false;
+let myField;
+const testField = [
+    ['░', '░', 'O'],
+    ['░', 'O', '░'],
+    ['░', '^', '░'],
+  ];
+do{
+    myField = new Field(Field.generateField(10, 10, 0.2), userRandom);
+} while(!myField.isValidField());
 
 
 myField.playGame();
