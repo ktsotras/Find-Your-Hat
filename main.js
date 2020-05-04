@@ -56,6 +56,16 @@ class Field {
                 break;
         }
     }
+    makeHole() {
+        let randX;
+        let randY;
+        do{
+            randX = Math.floor(Math.random() * this._field[0].length);
+            randY = Math.floor(Math.random() * this._field.length);
+        } while(this._field[randY][randX] === hole || this._field[randY][randX] === hat || (randX === this.x && randY === this.y))
+
+        this._field[randY][randX] = hole;
+    }
     isValidField() {
         let testField = [...this._field];
         let wasHere = [];
@@ -125,15 +135,14 @@ class Field {
 
         return newField;
     }
-    playGame() {
+    playGame(hardMode) {
         let play = true;
+        let turns = 0;
         while (play) {
             console.clear();
-            while(!this.isValidField){
-                this._field 
-            }
             this.print();
             this.askQuestion();
+            turns++;
 
             if (this.isOutOfBounds()) {
                 console.log("You went out of bounds. You died.");
@@ -144,12 +153,14 @@ class Field {
                 play = false;
                 break;
             } else if (this.isHat()) {
-                console.log("You found your hat!!!!");
+                console.log("You found your hat in "+turns+" turns!!!!");
                 play = false;
                 break;
             }
             
             this._field[this.y][this.x] = pathCharacter;
+            if(turns % 5 === 0)
+                this.makeHole();
         }
     }
 };
@@ -157,6 +168,7 @@ class Field {
 const userY = prompt('How tall of a maze do you want? Minimum of 5: ');
 const userX = prompt('How wide of a maze do you want? Minimum of 5: ');
 const userHoles = prompt('What percentage of holes do you want? Type number without percentage: ') / 100;
+const hardMode = prompt('Do you want to play on HARD MODE? A new hole appears every 5 turns! [Y] for yes or anything else for no: ').toUpperCase() === 'Y' ? true : false;
 const userRandom = prompt('Do you want to start at a random position? [Y] for yes or anything else for no: ').toUpperCase() === 'Y' ? true : false;
 let myField;
 
@@ -164,4 +176,4 @@ do{
     myField = new Field(Field.generateField(userY, userX, userHoles), userRandom);
 } while(!myField.isValidField());
 
-myField.playGame();
+myField.playGame(hardMode);
