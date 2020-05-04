@@ -30,6 +30,12 @@ class Field {
     isOutOfBounds() {
         return (this.x === -1 || this.x === this._field[0].length || this.y === -1 || this.y === this._field.length);
     }
+    isHat() {
+        return this._field[this.y][this.x] === hat;
+    }
+    isHole() {
+        return this._field[this.y][this.x] === hole;
+    }
     askQuestion() {
         const userInput = prompt('Which direction do you want to go? Enter U, D, L, or R: ').toUpperCase();
         switch (userInput) {
@@ -51,7 +57,48 @@ class Field {
         }
     }
     isValidField() {
-        return true;
+        let testField = [...this._field];
+        let wasHere = [];
+
+        for(let row = 0; row < testField.length; row++){
+            let newLine = [];
+            for(let col = 0; col < testField[0].length; col++){
+                newLine.push(false);
+            }
+            wasHere.push([...newLine]);
+        }
+
+        function findPath(y, x){
+            if(testField[y][x] === hat)
+                return true;
+            if(testField[y][x] === hole || wasHere[y][x])
+                return false;
+
+            wasHere[y][x] = true;
+            if(y != 0){
+                if(findPath(y-1, x)){
+                    return true;
+                }
+            }
+            if(y != testField.length - 1){
+                if(findPath(y+1, x)){
+                    return true;
+                }
+            }
+            if(x != 0){
+                if(findPath(y, x-1)){
+                    return true;
+                }
+            }
+            if(x != testField[0].length - 1){
+                if(findPath(y, x+1)){
+                    return true;
+                }
+            }
+
+            return false;
+        };
+        return findPath(this.y, this.x);
     }
     static generateField(y, x, holes = 0.1) {
         if (y < 5 || x < 5) {
@@ -92,35 +139,32 @@ class Field {
                 console.log("You went out of bounds. You died.");
                 play = false;
                 break;
-            } else {
-                let currentLocationCharacter = this._field[this.y][this.x];
-                if (currentLocationCharacter === 'O') {
-                    console.log('You fell down a hole!!');
-                    play = false;
-                    break;
-                }
-                if (currentLocationCharacter === '^') {
-                    console.log("You found your hat!!!!");
-                    play = false;
-                    break;
-                }
+            } else if(this.isHole()){
+                console.log('You fell down a hole!!');
+                play = false;
+                break;
+            } else if (this.isHat()) {
+                console.log("You found your hat!!!!");
+                play = false;
+                break;
             }
+            
             this._field[this.y][this.x] = pathCharacter;
         }
     }
 };
 
 
-const userRandom = prompt('Do you want to start at a random position? [Y] or [N]: ').toUpperCase() === 'Y' ? true : false;
+const userRandom = false;//prompt('Do you want to start at a random position? [Y] or [N]: ').toUpperCase() === 'Y' ? true : false;
 let myField;
-const testField = [
+/*const testField = [
     ['░', '░', 'O'],
     ['░', 'O', '░'],
     ['░', '^', '░'],
   ];
+  */
 do{
-    myField = new Field(Field.generateField(10, 10, 0.2), userRandom);
+    myField = new Field(Field.generateField(10, 10, 0.5), userRandom);
 } while(!myField.isValidField());
-
 
 myField.playGame();
