@@ -8,10 +8,10 @@ const fieldCharacter = '░';
 const pathCharacter = '*';
 
 class Field {
-    constructor(field, y=0, x=0) {
+    constructor(field) {
         this._field = field;
-        this.x = x;
-        this.y = y;
+        this.x = Math.floor(Math.random() * field[0].length);
+        this.y = Math.floor(Math.random() * field.length);
         this._field[this.y][this.x] = pathCharacter;
     }
     print() {
@@ -46,35 +46,19 @@ class Field {
             console.log('Error: Field parameters too small')
             return;
         }
-        let totalHoles = x * y * holes;
         let newField = [];
-        let newLine = [];
 
-        const randY = pad => {
-            return Math.floor(Math.random() * (y - pad)) + pad;
-        }
-        const randX = pad => {
-            return Math.floor(Math.random() * (x - pad)) + pad;
-        }
-
-        for (let i = 0; i < x; i++)
-            newLine.push(fieldCharacter);
-
-        for (let j = 0; j < y; j++)
+        for (let j = 0; j < y; j++){
+            let newLine = [];
+            for (let i = 0; i < x; i++){
+                newLine.push(Math.random() >= holes ? fieldCharacter : hole);
+            }
             newField.push([...newLine]);
-
-        for (let k = 0; k < totalHoles; k++) {
-            let holeY = 0
-            let holeX = 0;
-            do {
-                holeY = randY(1);
-                holeX = randX(1);
-                if (newField[holeY][holeX] != hole)
-                    newField[holeY][holeX] = hole;
-            } while (newField[holeY][holeX] != hole)
         }
-        let hatY = randY(2);
-        let hatX = randX(2);
+
+
+        let hatY = Math.floor(Math.random() * y);
+        let hatX = Math.floor(Math.random() * x);
 
         newField[hatY][hatX] = hat;
 
@@ -94,7 +78,7 @@ class Field {
             } else {
                 let currentLocationCharacter = this._field[this.y][this.x];
                 if (currentLocationCharacter === 'O') {
-                    console.log('You fell down a hole you moron.');
+                    console.log('You fell down a hole!!');
                     play = false;
                     break;
                 }
@@ -111,7 +95,7 @@ class Field {
 
 
 
-const myField = new Field(Field.generateField(10, 10, .25));
+const myField = new Field(Field.generateField(10, 25, .25));
 
 
 myField.playGame();
