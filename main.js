@@ -154,17 +154,14 @@ class Field {
     }
 };
 
-
-const userRandom = false;//prompt('Do you want to start at a random position? [Y] or [N]: ').toUpperCase() === 'Y' ? true : false;
+const userY = prompt('How tall of a maze do you want? Minimum of 5: ');
+const userX = prompt('How wide of a maze do you want? Minimum of 5: ');
+const userHoles = prompt('What percentage of holes do you want? Type number without percentage: ') / 100;
+const userRandom = prompt('Do you want to start at a random position? [Y] for yes or anything else for no: ').toUpperCase() === 'Y' ? true : false;
 let myField;
-/*const testField = [
-    ['░', '░', 'O'],
-    ['░', 'O', '░'],
-    ['░', '^', '░'],
-  ];
-  */
+
 do{
-    myField = new Field(Field.generateField(10, 10, 0.5), userRandom);
+    myField = new Field(Field.generateField(userY, userX, userHoles), userRandom);
 } while(!myField.isValidField());
 
 myField.playGame();
