@@ -8,9 +8,10 @@ const fieldCharacter = '░';
 const pathCharacter = '*';
 
 class Field {
-    constructor(field, randomStart) {
+    constructor(field, randomStart, hardMode=false) {
         this._field = field;
         this._randomStart = randomStart;
+        this.hardMode = hardMode;
         if(this._randomStart){
             do{
                 this.x = Math.floor(Math.random() * field[0].length);
@@ -135,7 +136,7 @@ class Field {
 
         return newField;
     }
-    playGame(hardMode) {
+    playGame() {
         let play = true;
         let turns = 0;
         while (play) {
@@ -159,7 +160,7 @@ class Field {
             }
             
             this._field[this.y][this.x] = pathCharacter;
-            if(turns % 5 === 0)
+            if(this.hardMode && turns % 5 === 0)
                 this.makeHole();
         }
     }
@@ -173,7 +174,7 @@ const userRandom = prompt('Do you want to start at a random position? [Y] for ye
 let myField;
 
 do{
-    myField = new Field(Field.generateField(userY, userX, userHoles), userRandom);
+    myField = new Field(Field.generateField(userY, userX, userHoles), userRandom, hardMode);
 } while(!myField.isValidField());
 
-myField.playGame(hardMode);
+myField.playGame();
