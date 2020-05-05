@@ -1,6 +1,7 @@
 const prompt = require('prompt-sync')({
     sigint: true
 });
+const term = require( 'terminal-kit' ).terminal ;
 
 const hat = '^';
 const hole = 'O';
@@ -25,8 +26,21 @@ class Field {
         this._field[this.y][this.x] = pathCharacter;
     }
     print() {
-        for (let i = 0; i < this._field.length; i++)
-            console.log(this._field[i].join(''));
+        for (let y = 0; y < this._field.length; y++){
+            for(let x = 0; x < this._field[0].length; x++){
+                if(y === this.y && x === this.x)
+                    term.green(pathCharacter);
+                else if (this._field[y][x] === pathCharacter)
+                    term.magenta(pathCharacter);
+                else if(this._field[y][x] === fieldCharacter)
+                    term.yellow(fieldCharacter);
+                else if(this._field[y][x] === hole)
+                    term.red(hole);
+                else
+                    term.noFormat(hat);
+            }
+            console.log("");
+        }
     }
     isOutOfBounds() {
         return (this.x === -1 || this.x === this._field[0].length || this.y === -1 || this.y === this._field.length);
