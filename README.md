@@ -8,6 +8,7 @@ Features:
 	* Chose Percentage of Holes.
 	* Hard Mode Option. New Holes Appear Every 5 Turns.
 	* Random Starting Position Option. Default is Upper Left Hand Corner of Field.
+* Full Color Field.
 * Random Field Generation.
 * Field Validation.
 
